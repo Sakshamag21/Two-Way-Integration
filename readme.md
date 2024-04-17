@@ -1,58 +1,51 @@
-# Two-Way Integration Project
+# Two Way Integration Project
 
 This project demonstrates a two-way integration between a MySQL database and Stripe, utilizing Kafka messaging for communication. The integration allows for seamless synchronization of customer data between the two systems.
 
-## Components
+## Folder Structure:
 
-### 1. API Service (`api.py`)
+- **src/**
+  - **integrations/**
+    - **kafka/**
+      - `kafka_consumer.py`: Handles Kafka message consumption and processing.
+      - `stripe_integration.py`: Manages interactions with Stripe API for customer operations.
+  - **services/**
+    - `inward_sync.py`: Handles webhook events and updates the MySQL database.
+  - **utils/**
+    - `database.py`: Contains database connection and query execution functions.
+    - `random_number.py`: Generate random ids for the creation of customer.
+- **api.py**: Contains Flask API endpoints for customer operations.
+- **.env**: Environment variables file.
+- **requirements.txt**: List of project dependencies.
 
-Exposes endpoints for creating, updating, and deleting customers in the MySQL database. It also publishes events related to these actions to a Kafka topic.
+## Features:
 
-### 2. Kafka Consumer (`kafka_consumer.py`)
+- **Modular Design:** Each component of the system is organized into separate modules, promoting code reusability and maintainability.
+- **Integration Flexibility:** The architecture supports integration with multiple systems, including Stripe, Salesforce, and potentially others, by encapsulating integration logic within dedicated modules.
+- **Scalability:** The system is designed to handle a growing volume of customer data and integrate seamlessly with other systems as the product evolves.
+- **Configurability:** Environment variables stored in the `.env` file allow for easy configuration of API keys, database credentials, and other settings.
+- **Documentation:** The project includes comprehensive documentation within the codebase, including docstrings, comments, and a README file to facilitate understanding and usage.
 
-Listens for messages from the Kafka topic and processes them accordingly. In this case, it interacts with the Stripe API to create, update, or delete customers based on the received events.
+## Setup and Usage:
 
-### 3. Inward Sync Service (`inward_sync.py`)
+1. **Environment Setup:**
+   - Install Python 3.x and ensure pip is installed.
+   - Clone the project repository.
 
-Receives webhook events from Stripe and updates the MySQL database accordingly.
+2. **Install Dependencies:**
+   - Navigate to the project directory.
+   - Run `pip install -r requirements.txt` to install project dependencies.
 
-## Prerequisites
+3. **Configuration:**
+   - Update the `.env` file with appropriate environment variables, including API keys and database credentials.
 
-- Python 3.x
-- Flask
-- Confluent Kafka
-- Stripe API
-- MySQL Server
-- Python libraries: `mysql-connector`, `stripe`, `dotenv`
+4. **Run the Services:**
+   - Start each component of the project by executing the corresponding Python scripts using command `python api.py` 
 
-## Setup
+5. **Testing and Deployment:**
+   - Visit `unitest` folder and run `testCase.py` 
 
-1. **MySQL Database Setup:** Ensure MySQL server is running and create a database named `zenskar_test`.
-2. **Stripe API Setup:** Obtain a Stripe API key and set it as the `SECRET_KEY` environment variable in a `.env` file.
-3. **Install Dependencies:** Run `pip install -r requirements.txt` to install required Python packages.
-4. **Run the Services:** Start each component of the project by running the respective Python scripts (`api.py`, `kafka_consumer.py`, `inward_sync.py`).
+## Contributing:
 
-## Usage
-
-1. **API Service:**
-   - Endpoint: `/customers`
-   - Methods: 
-     - `POST`: Create a new customer. Requires `name` and `email` fields in the request body.
-     - `PUT`: Update an existing customer. Requires customer ID in the URL path and `name` or `email` fields in the request body.
-     - `DELETE`: Delete a customer. Requires customer ID in the URL path.
-     
-2. **Kafka Consumer:** Listens for events from the Kafka topic `customer_changes` and interacts with the Stripe API accordingly.
-
-3. **Inward Sync Service:** Exposes a webhook endpoint `/webhook` to receive events from Stripe and update the MySQL database accordingly.
-
-## Workflow
-
-1. When a customer is created, updated, or deleted via the API service, an event is published to the Kafka topic.
-2. The Kafka consumer listens for these events and processes them.
-3. For customer creation and update events, the consumer interacts with the Stripe API to create or update the corresponding customer.
-4. The inward sync service receives webhook events from Stripe and updates the MySQL database accordingly.
-
-## Contributing
-
-Contributions are welcome! If you have any ideas for improvements or new features, feel free to open an issue or submit a pull request.
+Contributions to the project are welcome! If you have ideas for improvements or new features, feel free to open an issue or submit a pull request.
 
